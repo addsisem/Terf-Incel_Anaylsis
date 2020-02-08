@@ -3,7 +3,7 @@ from praw.models import MoreComments
 import pandas as pd
 from collections import Counter
 
-def saveSubmissions(subreddit):
+def saveSubmissions(subreddit, filename):
 
     sub = []
     title = []
@@ -18,7 +18,7 @@ def saveSubmissions(subreddit):
         df.loc[i, 'Subreddit'] = sub[i]
         df.loc[i, 'Top'] = title[i]
 
-    df.to_csv('A5.csv') #FIX
+    df.to_csv(filename) #FIX
 
 def main():
 
@@ -33,12 +33,12 @@ def main():
     subreddit4 = redditInstance.subreddit('terfisaslur')
     subreddit5 = redditInstance.subreddit('incelswithouthate')
 
-    saveSubmissions(subreddit)
-    saveSubmissions(subreddit1)
-    saveSubmissions(subreddit2)
-    saveSubmissions(subreddit3)
-    saveSubmissions(subreddit4)
-    saveSubmissions(subreddit5)
+    saveSubmissions(subreddit, 'gendercritical.csv')
+    saveSubmissions(subreddit1, 'MGTOW2.csv')
+    saveSubmissions(subreddit2, 'MensRights.csv')
+    saveSubmissions(subreddit3, 'itsafetish.csv')
+    saveSubmissions(subreddit4, 'terfisaslur.csv')
+    saveSubmissions(subreddit5, 'incelswithouthate.csv')
 
 if __name__ == '__main__':
     main()
