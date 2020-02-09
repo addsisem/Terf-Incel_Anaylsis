@@ -6,19 +6,31 @@ from collections import Counter
 def saveSubmissions(subreddit, filename):
 
     sub = []
-    title = []
+    postAuth = []
+    commText = []
+    commAuth = []
 
-    for post in subreddit.top(limit=50):
-        sub.append(post.subreddit)
-        title.append(post.title)
-
-    df = pd.DataFrame(columns = ['Subreddit', 'Top'])
+    for post in subreddit.top(limit=1):
+        sub.append(post)
 
     for i in range(len(sub)):
-        df.loc[i, 'Subreddit'] = sub[i]
-        df.loc[i, 'Top'] = title[i]
+        postAuth.append(sub[i].author)
+        sub[i].comments.replace_more(limit=0)
 
-    df.to_csv(filename) #FIX
+        for comments in sub[i].comments.list():
+            commText.append(comments.body)
+            commAuth.append(comments.author)
+
+    df = pd.DataFrame(columns = ['Post Author', 'Comment Author', 'Comment Body'])
+
+    for i in range(len(sub)):
+        df.loc[i, 'Post Author'] = postAuth[i]
+        for j in range(len(commText)):
+            df.loc[j, 'Comment Body'] = commText[j]
+            df.loc[j, 'Comment Author'] = commAuth[j]
+
+    df.to_csv(filename)
+
 
 def main():
 
@@ -26,19 +38,13 @@ def main():
                                  client_secret="kI-F1f7g1-cWqujoQYIgwaG6-QE",
                                  username='sisemorea', password='khg=QrekT78335T')
 
-    subreddit = redditInstance.subreddit('gendercritical')
-    subreddit1 = redditInstance.subreddit('MGTOW2')
-    subreddit2 = redditInstance.subreddit('MensRights')
-    subreddit3 = redditInstance.subreddit('itsafetish')
-    subreddit4 = redditInstance.subreddit('terfisaslur')
-    subreddit5 = redditInstance.subreddit('incelswithouthate')
+    subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'incelswithouthate']
+    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'incelswithouthate.csv']
 
-    saveSubmissions(subreddit, 'gendercritical.csv')
-    saveSubmissions(subreddit1, 'MGTOW2.csv')
-    saveSubmissions(subreddit2, 'MensRights.csv')
-    saveSubmissions(subreddit3, 'itsafetish.csv')
-    saveSubmissions(subreddit4, 'terfisaslur.csv')
-    saveSubmissions(subreddit5, 'incelswithouthate.csv')
+    #for i in range(len(subredditList)):
+    subreddit = redditInstance.subreddit(subredditList[0])
+    saveSubmissions(subreddit, files[0])
+
 
 if __name__ == '__main__':
     main()
