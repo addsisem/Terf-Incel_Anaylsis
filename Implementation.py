@@ -41,9 +41,9 @@ def main():
     subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'incelswithouthate']
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'incelswithouthate.csv']
 
-    #for i in range(len(subredditList)):
-    subreddit = redditInstance.subreddit(subredditList[0])
-    saveSubmissions(subreddit, files[0])
+    for i in range(len(subredditList)):
+        subreddit = redditInstance.subreddit(subredditList[0])
+        saveSubmissions(subreddit, files[0])
 
 
 if __name__ == '__main__':
