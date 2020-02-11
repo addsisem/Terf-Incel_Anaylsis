@@ -3,6 +3,10 @@ from praw.models import MoreComments
 import pandas as pd
 from collections import Counter
 
+dict =        { "author":[],
+                "subreddit":[],
+               }
+
 def saveSubmissions(subreddit, filename):
 
     sub = []
@@ -29,15 +33,16 @@ def saveSubmissions(subreddit, filename):
     df.to_csv(filename)
 
 def save_post_author(subreddit):
-    sub = []
-    postAuth = []
-
-    for post in subreddit.top(limit=50):
-        sub.append(post)
-        postAuth.append(post.author)
-
-    df = pd.DataFrame(columns=['Subreddit', 'Author'])
+    for submission in subreddit.top(limit=50):
+        dict["author"].append(submission.author)
+        dict['subreddit'].append(submission.subreddit)
+    df = pd.DataFrame(dict)
     df.to_csv('PostAuthors.csv')
+
+#def read_csv(files):
+#    for i in range(files):
+#        for word in i:
+#            if word in
 
 def main():
 
