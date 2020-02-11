@@ -28,6 +28,16 @@ def saveSubmissions(subreddit, filename):
 
     df.to_csv(filename)
 
+def save_post_author(subreddit):
+    sub = []
+    postAuth = []
+
+    for post in subreddit.top(limit=50):
+        sub.append(post)
+        postAuth.append(post.author)
+
+    df = pd.DataFrame(columns=['Subreddit', 'Author'])
+    df.to_csv('PostAuthors.csv')
 
 def main():
 
@@ -38,9 +48,11 @@ def main():
     subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate']
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
 
+    for i in subredditList:
+        subreddit = redditInstance.subreddit(i)
+        save_post_author(subreddit)
 
-    subreddit = redditInstance.subreddit('MensRights')
-    saveSubmissions(subreddit, files[2])
+    #saveSubmissions(subreddit, files[2])
 
 
 if __name__ == '__main__':
