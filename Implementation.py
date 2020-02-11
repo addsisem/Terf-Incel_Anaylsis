@@ -10,24 +10,21 @@ def saveSubmissions(subreddit, filename):
     commText = []
     commAuth = []
 
-    for post in subreddit.top(limit=1):
+    for post in subreddit.top(limit=10):
         sub.append(post)
 
     for i in range(len(sub)):
-        postAuth.append(sub[i].author)
         sub[i].comments.replace_more(limit=0)
 
         for comments in sub[i].comments.list():
             commText.append(comments.body)
             commAuth.append(comments.author)
 
-    df = pd.DataFrame(columns = ['Post Author', 'Comment Author', 'Comment Body'])
+    df = pd.DataFrame(columns = ['Comment Author', 'Comment Body'])
 
-    for i in range(len(sub)):
-        df.loc[i, 'Post Author'] = postAuth[i]
-        for j in range(len(commText)):
-            df.loc[j, 'Comment Body'] = commText[j]
-            df.loc[j, 'Comment Author'] = commAuth[j]
+    for j in range(len(commText)):
+        df.loc[j, 'Comment Body'] = commText[j]
+        df.loc[j, 'Comment Author'] = commAuth[j]
 
     df.to_csv(filename)
 
@@ -38,12 +35,12 @@ def main():
                                  client_secret="kI-F1f7g1-cWqujoQYIgwaG6-QE",
                                  username='sisemorea', password='khg=QrekT78335T')
 
-    subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'incelswithouthate']
-    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'incelswithouthate.csv']
+    subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate']
+    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
 
-    for i in range(len(subredditList)):
-        subreddit = redditInstance.subreddit(subredditList[0])
-        saveSubmissions(subreddit, files[0])
+
+    subreddit = redditInstance.subreddit('MensRights')
+    saveSubmissions(subreddit, files[2])
 
 
 if __name__ == '__main__':
