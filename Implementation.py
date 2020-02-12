@@ -2,6 +2,7 @@ import praw
 from praw.models import MoreComments
 import pandas as pd
 from collections import Counter
+import csv
 
 dict =        { "author":[],
                 "subreddit":[],
@@ -45,10 +46,20 @@ def save_post_author(subreddit):
     df = pd.DataFrame(dict)
     df.to_csv('PostAuthors.csv')
 
-#def read_csv(files):
-#    for i in range(files):
-#        for word in i:
-#            if word in
+def read_csv(file):
+    termcounter = 0
+    with open(file, 'r', encoding="UTF8") as csvfile:
+        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        for row in reader:
+            for i in row:
+                if file == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv':
+                    if i in terf_terms:
+                        termcounter += 1
+                elif file == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv':
+                    if i in incel_terms:
+                        termcounter += 1
+
+    print(termcounter)
 
 def main():
 
@@ -59,10 +70,10 @@ def main():
     subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate']
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
 
-    for i in subredditList:
-        subreddit = redditInstance.subreddit(i)
-        save_post_author(subreddit)
-
+    #for i in subredditList:
+    #    subreddit = redditInstance.subreddit(i)
+    #    save_post_author(subreddit)
+    read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
 
 
