@@ -9,10 +9,12 @@ dict =        { "author":[],
                }
 # This list of terms is what is categorized as derogetory as applied to the terf subreddits(Gendercritical, terfisaslur, itsafetish)
 terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
-              "COINing", "AGP", "autogynephilia", "transgender"]
+              "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
+              "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
 # This list of terms is what is categorized as derogetory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
 incel_terms = ["wrongthink", "goolag", "chad", "meeks", "femoids", "black pill", "hypergamy", "transgender",
-               "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky"]
+               "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transgender",
+               "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
 def saveSubmissions(subreddit, filename):
 
@@ -59,7 +61,7 @@ def read_csv(file):
                     if i in incel_terms:
                         termcounter += 1
 
-    print(termcounter)
+    print("there are " + str(termcounter) + " derogatory terms in " + file)
 
 def main():
 
@@ -73,7 +75,8 @@ def main():
     #for i in subredditList:
     #    subreddit = redditInstance.subreddit(i)
     #    save_post_author(subreddit)
-    read_csv('gendercritical.csv')
+    for i in files:
+        read_csv(i)
     #saveSubmissions(subreddit, files[2])
 
 
