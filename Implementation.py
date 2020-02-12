@@ -50,10 +50,13 @@ def save_post_author(subreddit):
 
 def read_csv(file):
     termcounter = 0
+    totalwords = 0
+    percentage = 0
     with open(file, 'r', encoding="UTF8") as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in reader:
             for i in row:
+                totalwords += 1
                 if file == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv':
                     if i in terf_terms:
                         termcounter += 1
@@ -61,7 +64,10 @@ def read_csv(file):
                     if i in incel_terms:
                         termcounter += 1
 
+    percentage = (termcounter/totalwords)
+
     print("there are " + str(termcounter) + " derogatory terms in " + file)
+    print(str(percentage) + "% of the words  in " + file + "are considered derogatory")
 
 def main():
 
