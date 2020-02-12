@@ -6,6 +6,12 @@ from collections import Counter
 dict =        { "author":[],
                 "subreddit":[],
                }
+# This list of terms is what is categorized as derogetory as applied to the terf subreddits(Gendercritical, terfisaslur, itsafetish)
+terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
+              "COINing", "AGP", "autogynephilia", "transgender"]
+# This list of terms is what is categorized as derogetory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
+incel_terms = ["wrongthink", "goolag", "chad", "meeks", "femoids", "black pill", "hypergamy", "transgender",
+               "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky"]
 
 def saveSubmissions(subreddit, filename):
 
