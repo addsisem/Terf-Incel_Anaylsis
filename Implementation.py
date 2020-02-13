@@ -66,9 +66,10 @@ def read_csv(file):
                         termcounter += 1
 
     percentage = (termcounter/totalwords)
+    percentage = round(percentage, 3)
 
     print("there are " + str(termcounter) + " derogatory terms in " + file)
-    print(str(percentage) + "% of the words  in " + file + "are considered derogatory")
+    print(str(percentage) + "% of the words  in " + file + " are considered derogatory")
 
 def main():
 
@@ -80,10 +81,10 @@ def main():
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
 
     #for i in subredditList:
-    subreddit = redditInstance.subreddit('MensRights')
+    #subreddit = redditInstance.subreddit('MensRights')
     #    save_post_author(subreddit)
     #read_csv('gendercritical.csv')
-    saveSubmissions(subreddit, files[2])
+    #saveSubmissions(subreddit, files[2])
     for i in files:
         read_csv(i)
     #saveSubmissions(subreddit, files[2])
