@@ -3,6 +3,7 @@ from praw.models import MoreComments
 import pandas as pd
 from collections import Counter
 import csv
+import time
 
 dict =        { "author":[],
                 "subreddit":[],
@@ -17,9 +18,10 @@ incel_terms = ["wrongthink", "goolag", "chad", "meeks", "femoids", "black pill",
 def saveSubmissions(subreddit, filename):
 
     sub = []
-    postAuth = []
     commText = []
     commAuth = []
+
+    df = pd.DataFrame(columns=['Comment Author', 'Comment Body'])
 
     for post in subreddit.top(limit=10):
         sub.append(post)
@@ -31,18 +33,19 @@ def saveSubmissions(subreddit, filename):
             commText.append(comments.body)
             commAuth.append(comments.author)
 
-    df = pd.DataFrame(columns = ['Comment Author', 'Comment Body'])
+        data = {'Comment Author': commAuth, 'Comment Body': commText}
 
-    for j in range(len(commText)):
-        df.loc[j, 'Comment Body'] = commText[j]
-        df.loc[j, 'Comment Author'] = commAuth[j]
+    data = {'Comment Author': commAuth, 'Comment Body': commText}
+    df = pd.DataFrame(data, columns = ['Comment Author', 'Comment Body'])
 
     df.to_csv(filename)
 
 def save_post_author(subreddit):
+
     for submission in subreddit.top(limit=50):
         dict["author"].append(submission.author)
         dict['subreddit'].append(submission.subreddit)
+
     df = pd.DataFrame(dict)
     df.to_csv('PostAuthors.csv')
 
@@ -71,10 +74,10 @@ def main():
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
 
     #for i in subredditList:
-    #    subreddit = redditInstance.subreddit(i)
+    subreddit = redditInstance.subreddit('MensRights')
     #    save_post_author(subreddit)
-    read_csv('gendercritical.csv')
-    #saveSubmissions(subreddit, files[2])
+    #read_csv('gendercritical.csv')
+    saveSubmissions(subreddit, files[2])
 
 
 if __name__ == '__main__':
