@@ -3,7 +3,6 @@ from praw.models import MoreComments
 import pandas as pd
 from collections import Counter
 import csv
-import time
 
 dict =        { "author":[],
                 "subreddit":[],
@@ -40,19 +39,25 @@ def saveSubmissions(subreddit, filename):
 
     df.to_csv(filename)
 
-def save_post_author(subreddit):
+def save_post(subreddit, filename):
 
-    for submission in subreddit.top(limit=50):
-        dict["author"].append(submission.author)
-        dict['subreddit'].append(submission.subreddit)
+    postAuth = []
+    sub = []
 
-    df = pd.DataFrame(dict)
-    df.to_csv('PostAuthors.csv')
+    for post in subreddit.top(limit=1000):
+        postAuth.append(post.author)
+
+    data = {'Post Author': postAuth}
+    df = pd.DataFrame(data, columns = ['Post Author'])
+
+    df.to_csv(filename)
 
 def read_csv(file):
+
     termcounter = 0
     totalwords = 0
     percentage = 0
+
     with open(file, 'r', encoding="UTF8") as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in reader:
@@ -79,14 +84,20 @@ def main():
 
     subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate']
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
+    authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv']
 
     #for i in subredditList:
-    #subreddit = redditInstance.subreddit('MensRights')
+
+    subreddit = redditInstance.subreddit('gendercritical')
+
     #    save_post_author(subreddit)
     #read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
-    for i in files:
-        read_csv(i)
+
+    save_post(subreddit, 'gendercriticalAuth.csv')
+
+    #for i in files:
+     #   read_csv(i)
     #saveSubmissions(subreddit, files[2])
 
 
