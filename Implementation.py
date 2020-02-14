@@ -22,7 +22,7 @@ def saveSubmissions(subreddit, filename):
     commText = []
     commAuth = []
 
-    for post in subreddit.top(limit=10):
+    for post in subreddit.top(limit=50):
         sub.append(post)
 
     for i in range(len(sub)):
@@ -86,9 +86,9 @@ def main():
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
     authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv']
 
-    #for i in subredditList:
-
-    subreddit = redditInstance.subreddit('gendercritical')
+    for k in range(len(subredditList)):
+        subreddit = redditInstance.subreddit(subredditList[k])
+        saveSubmissions(subreddit, files[k])
 
     #    save_post_author(subreddit)
     #read_csv('gendercritical.csv')
