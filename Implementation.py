@@ -22,7 +22,7 @@ def saveSubmissions(subreddit, filename):
     commText = []
     commAuth = []
 
-    for post in subreddit.top(limit=50):
+    for post in subreddit.top(limit=24):
         sub.append(post)
 
     for i in range(len(sub)):
@@ -94,7 +94,7 @@ def main():
     #read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
 
-    save_post(subreddit, 'gendercriticalAuth.csv')
+    #save_post(subreddit, 'gendercriticalAuth.csv')
 
     #for i in files:
      #   read_csv(i)
