@@ -4,70 +4,55 @@ import pandas as pd
 from collections import Counter
 import csv
 
-def saveSubmissions(subreddit, filename):
-    """Function to grab comments from the top 24 posts of a subreddit and save them to a CSV file"""
+dict =        { "author":[],
+                "subreddit":[],
+               }
+# This list of terms is what is categorized as derogetory as applied to the terf subreddits(Gendercritical, terfisaslur, itsafetish)
+terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
+              "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
+              "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
+# This list of terms is what is categorized as derogetory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
+incel_terms = ["wrongthink", "goolag", "chad", "meeks", "femoids", "black pill", "hypergamy", "transgender",
+               "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transgender",
+               "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
-    # Empty lists
+def saveSubmissions(subreddit, filename):
+
     sub = []
     commText = []
     commAuth = []
 
-    for post in subreddit.top(limit=24): # Loop to get top 24 posts in a subreddit
+    for post in subreddit.top(limit=20):
         sub.append(post)
 
-    for i in range(len(sub)): # Ignore more comments button
+    for i in range(len(sub)):
         sub[i].comments.replace_more(limit=0)
 
-        for comments in sub[i].comments.list(): # Loop to grab Comment text and author
+        for comments in sub[i].comments.list():
             commText.append(comments.body)
             commAuth.append(comments.author)
 
-    data = {'Comment Author': commAuth, 'Comment Body': commText} # Create dictionary to hold data
-    df = pd.DataFrame(data, columns = ['Comment Author', 'Comment Body']) # Move data into dataframe
+        data = {'Comment Author': commAuth, 'Comment Body': commText}
 
-    df.to_csv(filename) # Save to csv file
+    data = {'Comment Author': commAuth, 'Comment Body': commText}
+    df = pd.DataFrame(data, columns = ['Comment Author', 'Comment Body'])
+
+    df.to_csv(filename)
 
 def save_post(subreddit, filename):
-    """Function to save post authors of top 1000 posts of each subreddit"""
 
     postAuth = []
     sub = []
 
-    for post in subreddit.top(limit=1000): # Loop to grab top 1000 posts from a subreddit
-        postAuth.append(post.author) # Store authors from the subreddit
+    for post in subreddit.top(limit=10):
+        postAuth.append(post.author)
 
     data = {'Post Author': postAuth}
     df = pd.DataFrame(data, columns = ['Post Author'])
 
     df.to_csv(filename)
 
-def compareAuth(filename):
-    """Function to compare authors of posts in each subreddit to determine user frequency"""
-
-    auth = []
-
-    df = pd.read_csv(filename)
-    df.dropna(how='any', inplace=True)
-
-    val = df.values.tolist()
-
-    for i in range(len(val)):
-        auth.append(val[i][1])
-
-    temp = Counter(auth)
-
-    print(temp)
-
 def read_csv(file):
-
-    # This list of terms is what is categorized as derogetory as applied to the terf subreddits(Gendercritical, terfisaslur, itsafetish)
-    terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
-                  "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
-                  "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
-    # This list of terms is what is categorized as derogatory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
-    incel_terms = ["wrongthink", "goolag", "chad", "meeks", "femoids", "black pill", "hypergamy", "transgender",
-                   "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transgender",
-                   "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
     termcounter = 0
     totalwords = 0
@@ -93,7 +78,6 @@ def read_csv(file):
 
 def main():
 
-    # Create a redditInstance with praw for parsing
     redditInstance = praw.Reddit(user_agent='A5', client_id='c9MX-PNSpd4Tjw',
                                  client_secret="kI-F1f7g1-cWqujoQYIgwaG6-QE",
                                  username='sisemorea', password='khg=QrekT78335T')
@@ -102,19 +86,19 @@ def main():
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
     authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv']
 
-    for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
+    for k in range(len(subredditList)):
         subreddit = redditInstance.subreddit(subredditList[k])
-        save_post(subreddit, authFiles[k])
-      #  saveSubmissions(subreddit, files[k])
+        saveSubmissions(subreddit, files[k])
 
+    #    save_post_author(subreddit)
     #read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
 
-    #for i in files:
-     #   read_csv(i)
-    #saveSubmissions(subreddit, files[2])
+    #save_post(subreddit, 'gendercriticalAuth.csv')
 
-    compareAuth(authFiles[0])
+    #for i in files:
+    #    read_csv(i)
+    #saveSubmissions(subreddit, files[2])
 
 
 if __name__ == '__main__':
