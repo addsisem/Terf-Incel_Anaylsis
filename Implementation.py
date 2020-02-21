@@ -54,9 +54,9 @@ def compareAuth(filename):
     for i in range(len(val)):
         auth.append(val[i][1])
 
-    temp = Counter(auth)
+    pf = pd.DataFrame(pd.Series(auth).value_counts())
 
-    print(temp)
+    pf.to_csv(filename)
 
 def read_csv(file):
 
@@ -103,9 +103,10 @@ def main():
     authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv']
 
     for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-        subreddit = redditInstance.subreddit(subredditList[k])
-        save_post(subreddit, authFiles[k])
+     #   subreddit = redditInstance.subreddit(subredditList[k])
+      #  save_post(subreddit, authFiles[k])
       #  saveSubmissions(subreddit, files[k])
+      compareAuth(authFiles[k])
 
     #read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
@@ -114,7 +115,6 @@ def main():
      #   read_csv(i)
     #saveSubmissions(subreddit, files[2])
 
-    compareAuth(authFiles[0])
 
 
 if __name__ == '__main__':
