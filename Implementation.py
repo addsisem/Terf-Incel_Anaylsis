@@ -97,8 +97,8 @@ def read_csv(file):
                   "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
                   "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
     # This list of terms is what is categorized as derogatory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
-    incel_terms = ["wrongthink", "goolag", "chad", "meeks", "femoids", "black pill", "hypergamy", "transgender",
-                   "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transgender",
+    incel_terms = ["wrongthink","chad", "meeks", "femoids", "hypergamy", "transtrender",
+                   "alphas", "omegas", "betas", "cucks", "cuck", "Cuck", "stacy", "becky", "Stacy", "Becky", "Transtrender",
                    "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
     termcounter = 0
