@@ -41,7 +41,21 @@ def save_post(subreddit, filename):
 
     df.to_csv(filename)
 
-def compareAuth(filename):
+def getCommentAuth(filename):
+
+    auth = []
+
+    df = pd.read_csv(filename)
+    df.dropna(how='any', inplace=True)
+
+    val = df.values.tolist()
+
+    for i in range(len(val)):
+        auth.append(val[i][1])
+
+    print(pd.DataFrame(pd.Series(auth).value_counts()))
+
+def comparePostAuth(filename):
     """Function to compare authors of posts in each subreddit to determine user frequency"""
 
     auth = []
@@ -57,6 +71,24 @@ def compareAuth(filename):
     pf = pd.DataFrame(pd.Series(auth).value_counts())
 
     pf.to_csv(filename)
+
+def compareCSVAuth(filename, filename2):
+    """Function to compare Post Authors across CSV files"""
+
+    auth = []
+    authors = []
+
+    df = pd.read_csv(filename)
+    pf = pd.read_csv(filename2)
+
+    val = df.values.tolist()
+    lav = pf.values.tolist()
+
+    for i in range(len(val)):
+        auth.append(val[i][1])
+
+    for j in range(len(lav)):
+        authors.append(lav[i][1])
 
 def read_csv(file):
 
@@ -106,7 +138,10 @@ def main():
      #   subreddit = redditInstance.subreddit(subredditList[k])
       #  save_post(subreddit, authFiles[k])
       #  saveSubmissions(subreddit, files[k])
-      compareAuth(authFiles[k])
+      #compareAuth(authFiles[k])
+        getCommentAuth(files[k])
+
+    #getCommentAuth(files[0])
 
     #read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
