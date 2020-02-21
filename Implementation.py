@@ -1,7 +1,6 @@
 import praw
 from praw.models import MoreComments
 import pandas as pd
-from collections import Counter
 import csv
 
 def saveSubmissions(subreddit, filename):
@@ -36,24 +35,25 @@ def save_post(subreddit, filename):
     for post in subreddit.top(limit=1000): # Loop to grab top 1000 posts from a subreddit
         postAuth.append(post.author) # Store authors from the subreddit
 
-    data = {'Post Author': postAuth}
-    df = pd.DataFrame(data, columns = ['Post Author'])
+    data = {'Post Author': postAuth} # Format data
+    df = pd.DataFrame(data, columns = ['Post Author']) # Create a dataframe with column formatting
 
-    df.to_csv(filename)
+    df.to_csv(filename) # Export to csv
 
 def getCommentAuth(filename, filename2):
+    """Function to seperate comment authors from previous csv file into a new csv file"""
 
     auth = []
 
-    df = pd.read_csv(filename)
-    df.dropna(how='any', inplace=True)
+    df = pd.read_csv(filename) # Read csv file
+    df.dropna(how='any', inplace=True) # Removes any deleted users within initial author list
 
     val = df.values.tolist()
 
     for i in range(len(val)):
         auth.append(val[i][1])
 
-    pf = pd.DataFrame(pd.Series(auth).value_counts())
+    pf = pd.DataFrame(pd.Series(auth).value_counts()) # Counter using the pandas library
 
     pf.to_csv(filename2)
 
@@ -84,11 +84,11 @@ def compareCSVAuth(filename, filename2):
     df = pd.read_csv(filename)
     pf = pd.read_csv(filename2)
 
-    val = df.values.tolist()
+    val = df.values.tolist() # Convert dataframe into a list
     lav = pf.values.tolist()
 
     for i in range(len(val)):
-        auth.append(val[i][0])
+        auth.append(val[i][0]) # Position of authors name in list
 
     for j in range(len(lav)):
         authors.append(lav[j][0])
@@ -96,26 +96,27 @@ def compareCSVAuth(filename, filename2):
     for i in auth:
         count = 0
         for j in authors:
-            if i == j:
+            if i == j: # Compare author's names
                 count = count + 1
-        if count == 1:
-            cross.append(i)
+        if count == 1: # If the author is present in both subreddits
+            cross.append(i) # Add author to list
 
-    print()
+    print() # Output formatting
     print("Users Who Crossposted in ", filename, " and ", filename2)
 
     for i in range(len(cross)):
         print(cross[i])
 
 def read_csv(file):
+    """Function to check frequency of derogatory terms used in each subreddit"""
 
     # This list of terms is what is categorized as derogetory as applied to the terf subreddits(Gendercritical, terfisaslur, itsafetish)
     terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
                   "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
                   "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
     # This list of terms is what is categorized as derogatory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
-    incel_terms = ["wrongthink","chad", "meeks", "femoids", "hypergamy", "transtrender",
-                   "alphas", "omegas", "betas", "cucks", "cuck", "Cuck", "stacy", "becky", "Stacy", "Becky", "Transtrender",
+    incel_terms = ["wrongthink", "chad", "meeks", "femoids", "hypergamy", "transtrender",
+                   "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transtrender",
                    "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
     termcounter = 0
@@ -126,14 +127,15 @@ def read_csv(file):
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in reader:
             for i in row:
-                totalwords += 1
-                if file == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv':
+                totalwords += 1 # Counter for derogatory terms
+                if file == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv': # Checking similar ("TERF") subreddits
                     if i in terf_terms:
                         termcounter += 1
-                elif file == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv':
+                elif file == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv': # Checking similar ("Incel") subreddits
                     if i in incel_terms:
                         termcounter += 1
 
+    # Getting total percentages for cleaner data output
     percentage = (termcounter/totalwords)
     percentage = round(percentage, 3)
 
