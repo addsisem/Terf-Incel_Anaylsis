@@ -99,6 +99,7 @@ def compareCSVAuth(filename, filename2):
         if count == 1:
             cross.append(i)
 
+    print()
     print("Users Who Crossposted in ", filename, " and ", filename2)
 
     for i in range(len(cross)):
