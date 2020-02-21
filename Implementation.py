@@ -77,6 +77,7 @@ def compareCSVAuth(filename, filename2):
 
     auth = []
     authors = []
+    cross = []
 
     df = pd.read_csv(filename)
     pf = pd.read_csv(filename2)
@@ -85,10 +86,23 @@ def compareCSVAuth(filename, filename2):
     lav = pf.values.tolist()
 
     for i in range(len(val)):
-        auth.append(val[i][1])
+        auth.append(val[i][0])
 
     for j in range(len(lav)):
-        authors.append(lav[i][1])
+        authors.append(lav[j][0])
+
+    for i in auth:
+        count = 0
+        for j in authors:
+            if i == j:
+                count = count + 1
+        if count == 1:
+            cross.append(i)
+
+    print("Users Who Crossposted in ", filename, " and ", filename2)
+
+    for i in range(len(cross)):
+        print(cross[i])
 
 def read_csv(file):
 
@@ -134,17 +148,19 @@ def main():
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
     authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv']
 
-    for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
+    #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
      #   subreddit = redditInstance.subreddit(subredditList[k])
       #  save_post(subreddit, authFiles[k])
       #  saveSubmissions(subreddit, files[k])
       #compareAuth(authFiles[k])
-        getCommentAuth(files[k])
+        #getCommentAuth(files[k])
 
     #getCommentAuth(files[0])
 
     #read_csv('gendercritical.csv')
     #saveSubmissions(subreddit, files[2])
+
+    compareCSVAuth(authFiles[0], authFiles[3])
 
     #for i in files:
      #   read_csv(i)
