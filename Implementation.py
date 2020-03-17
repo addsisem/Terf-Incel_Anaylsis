@@ -11,7 +11,7 @@ def saveSubmissions(subreddit, filename):
     commText = []
     commAuth = []
 
-    for post in subreddit.top(limit=24): # Loop to get top 24 posts in a subreddit
+    for post in subreddit.top(limit=50): # Loop to get top 24 posts in a subreddit
         sub.append(post)
 
     for i in range(len(sub)): # Ignore more comments button
@@ -140,7 +140,7 @@ def read_csv(file):
     percentage = round(percentage, 3)
 
     print("there are " + str(termcounter) + " derogatory terms in " + file)
-    print(str(percentage) + "% of the words  in " + file + " are considered derogatory")
+    print(str(percentage) + "% of the words in " + file + " are considered derogatory")
 
 def main():
 
@@ -156,16 +156,16 @@ def main():
                  'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv']
 
     #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-     #   subreddit = redditInstance.subreddit(subredditList[k])
+    subreddit = redditInstance.subreddit('MensRights')
       #  save_post(subreddit, authFiles[k])
-      #  saveSubmissions(subreddit, files[k])
+    #saveSubmissions(subreddit, 'MensRights.csv')
       #compareAuth(authFiles[k])
       #  getCommentAuth(files[k], authCommFiles[k])
 
-    #read_csv('gendercritical.csv')
+    read_csv('MensRights.csv')
     #saveSubmissions(subreddit, files[2])
 
-    compareCSVAuth(authCommFiles[0], authCommFiles[3])
+    #compareCSVAuth(authCommFiles[0], authCommFiles[3])
 
     #for i in files:
      #   read_csv(i)
