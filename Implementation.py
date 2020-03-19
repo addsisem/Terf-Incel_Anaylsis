@@ -13,7 +13,7 @@ def saveSubmissions(subreddit, filename):
     commText = []
     commAuth = []
 
-    for post in subreddit.top(limit=24): # Loop to get top 24 posts in a subreddit
+    for post in subreddit.top(limit=50): # Loop to get top 24 posts in a subreddit
         sub.append(post)
 
     for i in range(len(sub)): # Ignore more comments button
@@ -37,24 +37,25 @@ def save_post(subreddit, filename):
     for post in subreddit.top(limit=1000): # Loop to grab top 1000 posts from a subreddit
         postAuth.append(post.author) # Store authors from the subreddit
 
-    data = {'Post Author': postAuth}
-    df = pd.DataFrame(data, columns = ['Post Author'])
+    data = {'Post Author': postAuth} # Format data
+    df = pd.DataFrame(data, columns = ['Post Author']) # Create a dataframe with column formatting
 
-    df.to_csv(filename)
+    df.to_csv(filename) # Export to csv
 
 def getCommentAuth(filename, filename2):
+    """Function to seperate comment authors from previous csv file into a new csv file"""
 
     auth = []
 
-    df = pd.read_csv(filename)
-    df.dropna(how='any', inplace=True)
+    df = pd.read_csv(filename) # Read csv file
+    df.dropna(how='any', inplace=True) # Removes any deleted users within initial author list
 
     val = df.values.tolist()
 
     for i in range(len(val)):
         auth.append(val[i][1])
 
-    pf = pd.DataFrame(pd.Series(auth).value_counts())
+    pf = pd.DataFrame(pd.Series(auth).value_counts()) # Counter using the pandas library
 
     pf.to_csv(filename2)
 
@@ -85,11 +86,11 @@ def compareCSVAuth(filename, filename2):
     df = pd.read_csv(filename)
     pf = pd.read_csv(filename2)
 
-    val = df.values.tolist()
+    val = df.values.tolist() # Convert dataframe into a list
     lav = pf.values.tolist()
 
     for i in range(len(val)):
-        auth.append(val[i][0])
+        auth.append(val[i][0]) # Position of authors name in list
 
     for j in range(len(lav)):
         authors.append(lav[j][0])
@@ -97,12 +98,12 @@ def compareCSVAuth(filename, filename2):
     for i in auth:
         count = 0
         for j in authors:
-            if i == j:
+            if i == j: # Compare author's names
                 count = count + 1
-        if count == 1:
-            cross.append(i)
+        if count == 1: # If the author is present in both subreddits
+            cross.append(i) # Add author to list
 
-    print()
+    print() # Output formatting
     print("Users Who Crossposted in ", filename, " and ", filename2)
 
     for i in range(len(cross)):
@@ -121,8 +122,8 @@ def read_csv():
                   "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
                   "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
     # This list of terms is what is categorized as derogatory as applied to the incel subreddits(incelswithouthate, MensRights, MGTOW2)
-    incel_terms = ["wrongthink","chad", "meeks", "femoids", "hypergamy", "transtrender",
-                   "alphas", "omegas", "betas", "cucks", "cuck", "Cuck", "stacy", "becky", "Stacy", "Becky", "Transtrender",
+    incel_terms = ["wrongthink", "chad", "meeks", "femoids", "hypergamy", "transtrender",
+                   "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transtrender",
                    "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv',
@@ -190,8 +191,8 @@ def Show_results(filename):
     plt.title("Total # of Derogatory terms used per subreddit")
     plt.bar(df['Subreddit'], df['Total # of terms']) # This line creates a bar graph
 
-    plt.show() # Visually represents all graphs that have been created
-
+    print("there are " + str(termcounter) + " derogatory terms in " + file)
+    print(str(percentage) + "% of the words  in " + file + " are considered derogatory")
 
 def main():
 
@@ -207,13 +208,13 @@ def main():
                  'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv']
 
     #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-     #   subreddit = redditInstance.subreddit(subredditList[k])
+    subreddit = redditInstance.subreddit('MensRights')
       #  save_post(subreddit, authFiles[k])
-      #  saveSubmissions(subreddit, files[k])
+    #saveSubmissions(subreddit, 'MensRights.csv')
       #compareAuth(authFiles[k])
       #  getCommentAuth(files[k], authCommFiles[k])
 
-    #read_csv('gendercritical.csv')
+    read_csv('MensRights.csv')
     #saveSubmissions(subreddit, files[2])
 
     #compareCSVAuth(authCommFiles[0], authCommFiles[3])
