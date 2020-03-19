@@ -191,8 +191,7 @@ def Show_results(filename):
     plt.title("Total # of Derogatory terms used per subreddit")
     plt.bar(df['Subreddit'], df['Total # of terms']) # This line creates a bar graph
 
-    print("there are " + str(termcounter) + " derogatory terms in " + file)
-    print(str(percentage) + "% of the words  in " + file + " are considered derogatory")
+    plt.show()
 
 def main():
 
@@ -208,13 +207,13 @@ def main():
                  'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv']
 
     #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-    subreddit = redditInstance.subreddit('MensRights')
+    #subreddit = redditInstance.subreddit('MensRights')
       #  save_post(subreddit, authFiles[k])
     #saveSubmissions(subreddit, 'MensRights.csv')
       #compareAuth(authFiles[k])
       #  getCommentAuth(files[k], authCommFiles[k])
 
-    read_csv('MensRights.csv')
+    #read_csv('MensRights.csv')
     #saveSubmissions(subreddit, files[2])
 
     #compareCSVAuth(authCommFiles[0], authCommFiles[3])
