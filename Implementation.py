@@ -1,9 +1,9 @@
 import praw
 from praw.models import MoreComments
 import pandas as pd
-from collections import Counter
 import csv
 import matplotlib.pyplot as plt
+import time
 
 def saveSubmissions(subreddit, filename):
     """Function to grab comments from the top 24 posts of a subreddit and save them to a CSV file"""
@@ -195,35 +195,31 @@ def Show_results(filename):
 
 def main():
 
+    count = 0
     # Create a redditInstance with praw for parsing
     redditInstance = praw.Reddit(user_agent='A5', client_id='c9MX-PNSpd4Tjw',
                                  client_secret="kI-F1f7g1-cWqujoQYIgwaG6-QE",
                                  username='sisemorea', password='khg=QrekT78335T')
 
-    subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate']
-    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv']
-    authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv']
+    subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate',
+                     'GenderCriticalGuys',
+                    'GenderCynicalCritical', 'TrollGC', 'shortcels', 'trufemcels', 'KotakuInAction']
+    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv',
+             'GenderCriticalGuys.csv', 'GenderCynicalCritical.csv', 'TrollGC.csv', 'shortcels.csv', 'trufemcels.csv', 'KotakuInAction.csv']
+    authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv', 'GenderCriticalGuysAuth.csv',
+                 'GenderCynicalCriticalAuth.csv', 'TrollGCAuth.csv', 'shortcelsAuth.csv', 'trufemcelsAuth.csv', 'KotakuInActionAuth.csv']
     authCommFiles = ['gendercriticalCommAuth.csv', 'MGTOW2CommAuth.csv', 'MensRightsCommAuth.csv', 'itsafetishCommAuth.csv',
-                 'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv']
+                 'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv', 'GenderCriticalGuysCommAuth.csv', 'GenderCynicalCriticalCommAuth.csv', 'TrollGCCommAuth.csv',
+                     'shortcelsCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv']
 
-    #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-    #subreddit = redditInstance.subreddit('MensRights')
-      #  save_post(subreddit, authFiles[k])
-    #saveSubmissions(subreddit, 'MensRights.csv')
-      #compareAuth(authFiles[k])
-      #  getCommentAuth(files[k], authCommFiles[k])
+    for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
+        subreddit = redditInstance.subreddit(subredditList[k])
+        #save_post(subreddit, authFiles[k])
+        #saveSubmissions(subreddit, files[k])
+        #getCommentAuth(files[k], authCommFiles[k])
+        read_csv(files[k])
 
-    #read_csv('MensRights.csv')
-    #saveSubmissions(subreddit, files[2])
-
-    #compareCSVAuth(authCommFiles[0], authCommFiles[3])
-
-    #for i in files:
-    #read_csv()
-    Show_results('Percentage.csv')
-    #saveSubmissions(subreddit, files[2])
-
-
+     #compareCSVAuth(authCommFiles[0], authCommFiles[3])
 
 if __name__ == '__main__':
     main()
