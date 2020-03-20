@@ -109,7 +109,7 @@ def compareCSVAuth(filename, filename2):
     for i in range(len(cross)):
         print(cross[i])
 
-def read_csv():
+def read_csv(filename):
     """
     This function reads each csv we have, compares each word to a special dictionary
     that is determined based on file name. Retrieves the total number of derogatory terms
@@ -126,8 +126,8 @@ def read_csv():
                    "alphas", "omegas", "betas", "cucks", "stacy", "becky", "Stacy", "Becky", "Transtrender",
                    "Chad", "Betas", "Cucks", "Hypergamy", "Alphas", "Omegas"]
 
-    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv',
-             'IncelsWithoutHate.csv']
+    #files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv',
+     #        'IncelsWithoutHate.csv']
 
     # Lists that will be used to create a csv
     sub = []
@@ -135,39 +135,41 @@ def read_csv():
     total = []
 
 
-    for h in files: # Reads through all files
-        termcounter = 0
-        totalwords = 0
-        percentage = 0
-        with open(h, 'r', encoding="UTF8") as csvfile: # Actually opens the files for reading
-            reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-            for row in reader: # Looks at each line
-                for i in row: # Looks at each word
-                    totalwords += 1
-                    if h == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv':
-                        # Depending on the csv, a specific dictionary will be used for comparison
-                        if i in terf_terms:
-                            termcounter += 1
-                    elif h == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv':
-                        if i in incel_terms:
-                            termcounter += 1
-        percentage = (termcounter / totalwords) # Basic math to calculate a percentage
-        percentage = round(percentage, 3) # Round the percentage to make it pretty
+    #for h in files: # Reads through all files
+    termcounter = 0
+    totalwords = 0
+    percentage = 0
 
-        sub.append(h) # append the filename to a list
-        percentages.append(percentage) # append the percentage to a list
-        total.append(termcounter) # appened the total number of derogatory terms used in the csv to a list
+    with open(filename, 'r', encoding="UTF8") as csvfile: # Actually opens the files for reading
+        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        for row in reader: # Looks at each line
+            for i in row: # Looks at each word
+                totalwords += 1
+                if filename == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv' or 'GenderCriticalGuys.csv'or 'GenderCynicalCritical.csv' or 'TrollGC.csv':
+                    # Depending on the csv, a specific dictionary will be used for comparison
+                    if i in terf_terms:
+                        termcounter += 1
+                elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'shortcels.csv':
+                    if i in incel_terms:
+                        termcounter += 1
 
-        # Print the results in a readable format
-        print("there are " + str(termcounter) + " derogatory terms in " + h)
-        print(str(percentage) + "% of the words  in " + h + " are considered derogatory")
+    percentage = (termcounter / totalwords) # Basic math to calculate a percentage
+    percentage = round(percentage, 3) # Round the percentage to make it pretty
 
+    sub.append(filename) # append the filename to a list
+    percentages.append(percentage) # append the percentage to a list
+    total.append(termcounter) # append the total number of derogatory terms used in the csv to a list
+
+    # Print the results in a readable format
+    print("there are " + str(termcounter) + " derogatory terms in " + filename)
+    print(str(percentage) + "% of the words  in " + filename + " are considered derogatory")
 
     # Create the Dataframe and send it to the new csv
     data = {'Subreddit': sub, 'Percentage': percentages, 'Total # of terms': total}  # Create dictionary to hold data
     df = pd.DataFrame(data, columns=['Subreddit', 'Percentage', 'Total # of terms'])  # Move data into dataframe
 
-    df.to_csv("Percentage.csv")
+    # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
+    df.to_csv("Percentage.csv", mode='a', header=False) # Credit to root and tlingf from Stack Overflow
 
 def Show_results(filename):
     """
@@ -195,7 +197,10 @@ def Show_results(filename):
 
 def main():
 
-    count = 0
+    # https://stackoverflow.com/questions/15063936/csv-error-field-larger-than-field-limit-131072
+    # Credit to Tad from Stack Overflow
+    csv.field_size_limit(100000000) # Extends max field size for a csv so no errors are thrown.
+
     # Create a redditInstance with praw for parsing
     redditInstance = praw.Reddit(user_agent='A5', client_id='c9MX-PNSpd4Tjw',
                                  client_secret="kI-F1f7g1-cWqujoQYIgwaG6-QE",
