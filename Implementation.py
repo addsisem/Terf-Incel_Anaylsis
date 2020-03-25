@@ -109,7 +109,7 @@ def compareCSVAuth(filename, filename2):
     for i in range(len(cross)):
         print(cross[i])
 
-def read_csv(filename):
+def read_csv(filename, subreddit):
     """
     This function reads each csv we have, compares each word to a special dictionary
     that is determined based on file name. Retrieves the total number of derogatory terms
@@ -134,11 +134,8 @@ def read_csv(filename):
     percentages = []
     total = []
 
-
-    #for h in files: # Reads through all files
     termcounter = 0
     totalwords = 0
-    percentage = 0
 
     with open(filename, 'r', encoding="UTF8") as csvfile: # Actually opens the files for reading
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
@@ -156,7 +153,7 @@ def read_csv(filename):
     percentage = (termcounter / totalwords) # Basic math to calculate a percentage
     percentage = round(percentage, 3) # Round the percentage to make it pretty
 
-    sub.append(filename) # append the filename to a list
+    sub.append(subreddit) # append the filename to a list
     percentages.append(percentage) # append the percentage to a list
     total.append(termcounter) # append the total number of derogatory terms used in the csv to a list
 
@@ -180,14 +177,14 @@ def Show_results(filename):
 
     df = pd.read_csv(filename) # Reads the given csv file so a graph can be made from the data
     plt.figure(0)  # Fourth Figure
-    plt.rc('xtick', labelsize=6) # Sets the font size of the Xlabel
+    plt.rc('xtick', labelsize=7) # Sets the font size of the Xlabel
     plt.xlabel("Subreddit") # Label the X axis
     plt.ylabel("Percentage of Derogatory terms used") # Label the Y axis
     plt.title("Percentage of Derogatory terms used per subreddit") # Sets the title for graph
     plt.bar(df['Subreddit'], df['Percentage']) # uses the read file and the first two columns of data
 
     plt.figure(1) # Creates a second graph
-    plt.rc('xtick', labelsize=6)
+    plt.rc('xtick', labelsize=7)
     plt.xlabel("Subreddit")
     plt.ylabel("Total # of Derogatory terms used")
     plt.title("Total # of Derogatory terms used per subreddit")
@@ -207,24 +204,25 @@ def main():
                                  username='sisemorea', password='khg=QrekT78335T')
 
     subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate',
-                     'GenderCriticalGuys',
-                    'GenderCynicalCritical', 'TrollGC', 'shortcels', 'trufemcels', 'KotakuInAction']
+                     'shortcels',
+                    'GenderCynicalCritical', 'TrollGC', 'GenderCriticalGuys', 'trufemcels', 'KotakuInAction']
     files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv',
-             'GenderCriticalGuys.csv', 'GenderCynicalCritical.csv', 'TrollGC.csv', 'shortcels.csv', 'trufemcels.csv', 'KotakuInAction.csv']
-    authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv', 'GenderCriticalGuysAuth.csv',
-                 'GenderCynicalCriticalAuth.csv', 'TrollGCAuth.csv', 'shortcelsAuth.csv', 'trufemcelsAuth.csv', 'KotakuInActionAuth.csv']
+             'shortcels.csv', 'GenderCynicalCritical.csv', 'TrollGC.csv', 'GenderCriticalGuys.csv', 'trufemcels.csv', 'KotakuInAction.csv']
+    authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv', 'shortcelsAuth.csv',
+                 'GenderCynicalCriticalAuth.csv', 'TrollGCAuth.csv', 'GenderCriticalGuysAuth.csv', 'trufemcelsAuth.csv', 'KotakuInActionAuth.csv']
     authCommFiles = ['gendercriticalCommAuth.csv', 'MGTOW2CommAuth.csv', 'MensRightsCommAuth.csv', 'itsafetishCommAuth.csv',
-                 'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv', 'GenderCriticalGuysCommAuth.csv', 'GenderCynicalCriticalCommAuth.csv', 'TrollGCCommAuth.csv',
-                     'shortcelsCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv']
+                 'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv', 'shortcelsCommAuth.csv', 'GenderCynicalCriticalCommAuth.csv', 'TrollGCCommAuth.csv',
+                     'GenderCriticalGuysCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv']
 
-    for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-        subreddit = redditInstance.subreddit(subredditList[k])
+    #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
+        #subreddit = redditInstance.subreddit(subredditList[k])
         #save_post(subreddit, authFiles[k])
         #saveSubmissions(subreddit, files[k])
         #getCommentAuth(files[k], authCommFiles[k])
-        read_csv(files[k])
+        #read_csv(files[k], subredditList[k])
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
+    Show_results('Percentage.csv')
 
 if __name__ == '__main__':
     main()
