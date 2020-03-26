@@ -1,9 +1,14 @@
 import praw
-from praw.models import MoreComments
 import pandas as pd
 import csv
 import matplotlib.pyplot as plt
-import time
+import numpy as np
+import gensim
+from gensim import corpora
+from pprint import pprint
+from gensim.utils import simple_preprocess
+from smart_open import smart_open
+import os
 
 def saveSubmissions(subreddit, filename):
     """Function to grab comments from the top 24 posts of a subreddit and save them to a CSV file"""
@@ -168,7 +173,7 @@ def read_csv(filename, subreddit):
     # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
     df.to_csv("Percentage.csv", mode='a', header=False) # Credit to root and tlingf from Stack Overflow
 
-def Show_results(filename):
+def Show_results(filename, authfile):
     """
     This function uses a csv file to create several bar graphs that communicate our findings
     :param filename:
@@ -190,7 +195,35 @@ def Show_results(filename):
     plt.title("Total # of Derogatory terms used per subreddit")
     plt.bar(df['Subreddit'], df['Total # of terms']) # This line creates a bar graph
 
+    plt.figure(2)
+    pf = pd.read_csv(authfile) # need to condense auth data
+    #pf[:15] # Look into duplicates
+    list = pf.values.tolist()
+
+    x = []
+    y = []
+
+    for i in range(len(list)):
+        y.append(list[i][1])
+        x.append(list[i][0])
+
+    plt.scatter(x, y)
+
+    plt.ylabel("# of Posts")  # Label the Y axis
+    plt.xlabel("User")  # Label the X axis
+    plt.title("# of Posts per User")  # Set the plot’s title
+
     plt.show()
+
+def topicModel(filename):
+
+    # Create gensim dictionary form a single text file
+    dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
+                                    open(filename,
+                                         encoding='utf-8'))
+
+    # Token to Id map
+    pprint(dictionary.token2id)
 
 def main():
 
@@ -215,14 +248,16 @@ def main():
                      'GenderCriticalGuysCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv']
 
     #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-        #subreddit = redditInstance.subreddit(subredditList[k])
-        #save_post(subreddit, authFiles[k])
+    #subreddit = redditInstance.subreddit(subredditList[4])
+    #save_post(subreddit, authFiles[4])
         #saveSubmissions(subreddit, files[k])
         #getCommentAuth(files[k], authCommFiles[k])
         #read_csv(files[k], subredditList[k])
+    #comparePostAuth('terfisaslurAuth.csv')
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
-    Show_results('Percentage.csv')
+    Show_results('Percentage.csv', 'terfisaslurAuth.csv')
+    #topicModel('gendercritical.csv')
 
 if __name__ == '__main__':
     main()
