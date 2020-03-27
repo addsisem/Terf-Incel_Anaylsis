@@ -7,6 +7,7 @@ import gensim
 from gensim import corpora
 from pprint import pprint
 from gensim.utils import simple_preprocess
+from nltk.corpus import stopwords
 from smart_open import smart_open
 import os
 
@@ -46,6 +47,28 @@ def save_post(subreddit, filename):
     df = pd.DataFrame(data, columns = ['Post Author']) # Create a dataframe with column formatting
 
     df.to_csv(filename) # Export to csv
+
+def Remove_Stopwords(filename):
+
+    newfile = filename.replace('.csv', '.txt')
+    file1 = open(newfile, 'w')
+    if filename == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv' or 'GenderCriticalGuys.csv' or 'GenderCynicalCritical.csv' or 'TrollGC.csv':
+        terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
+                      "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
+                      "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
+        stop_words = (stopwords.words('english'))
+        final_stop_words = set([word for word in stop_words if word not in terf_terms])
+        with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
+            reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+            for row in reader:  # Looks at each line
+                for i in row:  # Looks at each word
+                    if i not in final_stop_words:
+                        #file1.write(i) # This line causes errors
+                        print(i)
+
+    elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'shortcels.csv':
+        pass
+
 
 def getCommentAuth(filename, filename2):
     """Function to seperate comment authors from previous csv file into a new csv file"""
@@ -217,7 +240,7 @@ def Show_results(filename, authfile):
 
 def topicModel(filename):
 
-    # Create gensim dictionary form a single text file
+    # Create gensim dictionary from a single CSV file
     dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
                                     open(filename,
                                          encoding='utf-8'))
@@ -256,8 +279,9 @@ def main():
     #comparePostAuth('terfisaslurAuth.csv')
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
-    Show_results('Percentage.csv', 'terfisaslurAuth.csv')
+    #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('gendercritical.csv')
+    Remove_Stopwords('gendercritical.csv')
 
 if __name__ == '__main__':
     main()
