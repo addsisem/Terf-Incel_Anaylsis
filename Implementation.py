@@ -68,7 +68,17 @@ def Remove_Stopwords(filename):
         file.close()
 
     elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'shortcels.csv':
-        pass
+        newfile = filename.replace('.csv', '.txt')
+        file = codecs.open(newfile, 'w', encoding="UTF8")
+        stop_words = (stopwords.words('english'))
+        with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
+            reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+            for row in reader:  # Looks at each line
+                for i in row:  # Looks at each word
+                    if i not in stop_words:
+                        file.write(i)  # This line causes errors
+                        print(i)
+            file.close()
 
 
 def getCommentAuth(filename, filename2):
@@ -281,8 +291,8 @@ def main():
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
-    topicModel('gendercritical.txt')
-    #Remove_Stopwords('gendercritical.csv')
+    #topicModel('gendercritical.txt')
+    Remove_Stopwords('MensRights.csv')
 
 if __name__ == '__main__':
     main()
