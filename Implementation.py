@@ -8,6 +8,7 @@ from gensim import corpora
 from pprint import pprint
 from gensim.utils import simple_preprocess
 from nltk.corpus import stopwords
+import codecs
 from smart_open import smart_open
 import os
 
@@ -49,9 +50,8 @@ def save_post(subreddit, filename):
     df.to_csv(filename) # Export to csv
 
 def Remove_Stopwords(filename):
-
     newfile = filename.replace('.csv', '.txt')
-    file1 = open(newfile, 'w')
+    file = codecs.open(newfile, 'w', encoding="UTF8")
     if filename == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv' or 'GenderCriticalGuys.csv' or 'GenderCynicalCritical.csv' or 'TrollGC.csv':
         terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
                       "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
@@ -63,8 +63,9 @@ def Remove_Stopwords(filename):
             for row in reader:  # Looks at each line
                 for i in row:  # Looks at each word
                     if i not in final_stop_words:
-                        #file1.write(i) # This line causes errors
+                        file.write(i) # This line causes errors
                         print(i)
+        file.close()
 
     elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'shortcels.csv':
         pass
@@ -280,8 +281,8 @@ def main():
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
-    #topicModel('gendercritical.csv')
-    Remove_Stopwords('gendercritical.csv')
+    topicModel('gendercritical.txt')
+    #Remove_Stopwords('gendercritical.csv')
 
 if __name__ == '__main__':
     main()
