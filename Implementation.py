@@ -1,6 +1,7 @@
 import praw
 import pandas as pd
 import csv
+from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
 import gensim
@@ -50,14 +51,19 @@ def save_post(subreddit, filename):
     df.to_csv(filename) # Export to csv
 
 def Remove_Stopwords(filename):
+
     newfile = filename.replace('.csv', '.txt')
     file = codecs.open(newfile, 'w', encoding="UTF8")
+
     if filename == 'gendercritical.csv' or 'itsafetish.csv' or 'terfisaslur.csv' or 'GenderCriticalGuys.csv' or 'GenderCynicalCritical.csv' or 'TrollGC.csv':
+
         terf_terms = ["man", "he", "him", "it", "TIF", "TIM", "TRA", "MRA", "handmaiden", "NAMALT",
                       "COINing", "AGP", "autogynephilia", "transgender", "mra", "tim", "tif", "It",
                       "Man", "He", "Him", "It", "agp", "Autogynephilia", "coining"]
+
         stop_words = (stopwords.words('english'))
         final_stop_words = set([word for word in stop_words if word not in terf_terms])
+
         with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             for row in reader:  # Looks at each line
@@ -67,10 +73,12 @@ def Remove_Stopwords(filename):
                         print(i)
         file.close()
 
-    elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'shortcels.csv':
+    elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'MensRants.csv':
+
         newfile = filename.replace('.csv', '.txt')
         file = codecs.open(newfile, 'w', encoding="UTF8")
         stop_words = (stopwords.words('english'))
+
         with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             for row in reader:  # Looks at each line
@@ -114,6 +122,11 @@ def comparePostAuth(filename):
     pf = pd.DataFrame(pd.Series(auth).value_counts())
 
     pf.to_csv(filename)
+
+    df2 = pd.read_csv(filename)
+    pf2 = df2.head(15)
+
+    pf2.to_csv(filename)
 
 def compareCSVAuth(filename, filename2):
     """Function to compare Post Authors across CSV files"""
@@ -185,7 +198,7 @@ def read_csv(filename, subreddit):
                     # Depending on the csv, a specific dictionary will be used for comparison
                     if i in terf_terms:
                         termcounter += 1
-                elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'shortcels.csv':
+                elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'MensRants.csv':
                     if i in incel_terms:
                         termcounter += 1
 
@@ -231,20 +244,20 @@ def Show_results(filename, authfile):
 
     plt.figure(2)
     pf = pd.read_csv(authfile) # need to condense auth data
-    #pf[:15] # Look into duplicates
+
     list = pf.values.tolist()
 
     x = []
     y = []
 
     for i in range(len(list)):
+        x.append(list[i][2])
         y.append(list[i][1])
-        x.append(list[i][0])
 
     plt.scatter(x, y)
 
-    plt.ylabel("# of Posts")  # Label the Y axis
-    plt.xlabel("User")  # Label the X axis
+    plt.xlabel("# of Posts")  # Label the Y axis
+    plt.ylabel("User")  # Label the X axis
     plt.title("# of Posts per User")  # Set the plot’s title
 
     plt.show()
@@ -270,24 +283,24 @@ def main():
                                  client_secret="kI-F1f7g1-cWqujoQYIgwaG6-QE",
                                  username='sisemorea', password='khg=QrekT78335T')
 
-    subredditList = ['gendercritical', 'MGTOW2', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate',
-                     'shortcels',
-                    'GenderCynicalCritical', 'TrollGC', 'GenderCriticalGuys', 'trufemcels', 'KotakuInAction']
-    files = ['gendercritical.csv', 'MGTOW2.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv',
-             'shortcels.csv', 'GenderCynicalCritical.csv', 'TrollGC.csv', 'GenderCriticalGuys.csv', 'trufemcels.csv', 'KotakuInAction.csv']
-    authFiles = ['gendercriticalAuth.csv', 'MGTOW2Auth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv', 'shortcelsAuth.csv',
-                 'GenderCynicalCriticalAuth.csv', 'TrollGCAuth.csv', 'GenderCriticalGuysAuth.csv', 'trufemcelsAuth.csv', 'KotakuInActionAuth.csv']
-    authCommFiles = ['gendercriticalCommAuth.csv', 'MGTOW2CommAuth.csv', 'MensRightsCommAuth.csv', 'itsafetishCommAuth.csv',
-                 'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv', 'shortcelsCommAuth.csv', 'GenderCynicalCriticalCommAuth.csv', 'TrollGCCommAuth.csv',
-                     'GenderCriticalGuysCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv']
+    subredditList = ['gendercritical', 'MensRights', 'itsafetish', 'terfisaslur', 'IncelsWithoutHate',
+                     'MensRants',
+                    'GenderCynicalCritical', 'TrollGC', 'GenderCriticalGuys', 'trufemcels', 'KotakuInAction', 'MGTOW2']
+    files = ['gendercritical.csv', 'MensRights.csv', 'itsafetish.csv', 'terfisaslur.csv', 'IncelsWithoutHate.csv',
+             'MensRants.csv', 'GenderCynicalCritical.csv', 'TrollGC.csv', 'GenderCriticalGuys.csv', 'trufemcels.csv', 'KotakuInAction.csv', 'MGTOW2.csv']
+    authFiles = ['gendercriticalAuth.csv', 'MensRightsAuth.csv', 'itsafetishAuth.csv', 'terfisaslurAuth.csv', 'IncelsWithoutHateAuth.csv', 'MensRantsAuth.csv',
+                 'GenderCynicalCriticalAuth.csv', 'TrollGCAuth.csv', 'GenderCriticalGuysAuth.csv', 'trufemcelsAuth.csv', 'KotakuInActionAuth.csv', 'MGTOW2Auth.csv']
+    authCommFiles = ['gendercriticalCommAuth.csv', 'MensRightsCommAuth.csv', 'itsafetishCommAuth.csv',
+                 'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv', 'MensRantsCommAuth.csv', 'GenderCynicalCriticalCommAuth.csv', 'TrollGCCommAuth.csv',
+                     'GenderCriticalGuysCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv', 'MGTOW2CommAuth.csv']
 
     #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-    #subreddit = redditInstance.subreddit(subredditList[4])
-    #save_post(subreddit, authFiles[4])
+        #subreddit = redditInstance.subreddit(subredditList[k])
+        #save_post(subreddit, authFiles[k])
         #saveSubmissions(subreddit, files[k])
         #getCommentAuth(files[k], authCommFiles[k])
         #read_csv(files[k], subredditList[k])
-    #comparePostAuth('terfisaslurAuth.csv')
+        #comparePostAuth(authFiles[k])
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
