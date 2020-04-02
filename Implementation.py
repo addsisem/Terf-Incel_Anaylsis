@@ -52,6 +52,10 @@ def save_post(subreddit, filename):
 
 def Remove_Stopwords(filename):
 
+    df = pd.read_csv(filename)
+    df.drop(df.columns[[0, 1]], axis=1, inplace=True) #Remove comment author
+    df.to_csv(filename)
+
     newfile = filename.replace('.csv', '.txt')
     file = codecs.open(newfile, 'w', encoding="UTF8")
 
@@ -305,7 +309,7 @@ def main():
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('MensRights.txt')
-    Remove_Stopwords('terfisaslur.csv')
+    Remove_Stopwords('MensRights.csv')
 
 if __name__ == '__main__':
     main()
