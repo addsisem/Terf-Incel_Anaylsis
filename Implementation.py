@@ -295,17 +295,6 @@ def Bigrams(filename):
     for line in file:
         token = nltk.word_tokenize(line)
         bigram = list(ngrams(token, 2))
-    """dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
-                                    open(filename,
-                                         encoding='utf-8'))
-    corpus = [dictionary.doc2bow(simple_preprocess(line)) for line in open(filename,
-                                                                           encoding='utf-8')]
-
-    dataset = []
-    for line in file:
-        dataset.append(line)
-    # Build the bigram models
-    bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)"""
 
     # Construct bigram
     print(bigram)
