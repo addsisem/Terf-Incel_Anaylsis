@@ -1,3 +1,4 @@
+import nltk
 import praw
 import pandas as pd
 import csv
@@ -6,11 +7,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import gensim
 from gensim import corpora
+from gensim import models
 from pprint import pprint
 from gensim.utils import simple_preprocess
 from nltk.corpus import stopwords
+from nltk import word_tokenize
+from nltk.util import ngrams
 import codecs
-from gensim import models
 from smart_open import smart_open
 import os
 
@@ -75,6 +78,7 @@ def Remove_Stopwords(filename):
                 for i in row:  # Looks at each word
                     if i.lower() not in final_stop_words:
                         file.write(i) # This line causes errors
+                        file.write(' ')
                         print(i)
         file.close()
 
@@ -90,6 +94,7 @@ def Remove_Stopwords(filename):
                 for i in row:  # Looks at each word
                     if i.lower() not in stop_words:
                         file.write(i)  # This line causes errors
+                        file.write(' ')
                         print(i)
         file.close()
 
@@ -284,8 +289,13 @@ def topicModel(filename):
     #pprint(dictionary.token2id)
 
 def Bigrams(filename):
+
     file = codecs.open(filename, 'r', encoding="UTF8")
-    dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
+
+    for line in file:
+        token = nltk.word_tokenize(line)
+        bigram = list(ngrams(token, 2))
+    """dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
                                     open(filename,
                                          encoding='utf-8'))
     corpus = [dictionary.doc2bow(simple_preprocess(line)) for line in open(filename,
@@ -295,10 +305,10 @@ def Bigrams(filename):
     for line in file:
         dataset.append(line)
     # Build the bigram models
-    bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)
+    bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)"""
 
     # Construct bigram
-    print(bigram[dataset])
+    print(bigram)
 
 def main():
 
@@ -323,9 +333,9 @@ def main():
                      'GenderCriticalGuysCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv', 'MGTOW2CommAuth.csv']
 
     #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-        #subreddit = redditInstance.subreddit(subredditList[k])
+        #subreddit = redditInstance.subreddit(subredditList[3])
         #save_post(subreddit, authFiles[k])
-        #saveSubmissions(subreddit, files[k])
+        #saveSubmissions(subreddit, files[3])
         #getCommentAuth(files[k], authCommFiles[k])
         #read_csv(files[k], subredditList[k])
         #comparePostAuth(authFiles[k])
@@ -334,7 +344,7 @@ def main():
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('MensRights.txt')
     Bigrams('gendercritical.txt')
-    #Remove_Stopwords('terfisaslur.csv')
+    #Remove_Stopwords('gendercritical.csv')
 
 if __name__ == '__main__':
     main()
