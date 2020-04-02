@@ -275,8 +275,23 @@ def topicModel(filename):
     tfidf = models.TfidfModel(corpus, smartirs='ntc') # This model adds weights to each unique word in the corpus
     for doc in tfidf[corpus]: # applies weight to each line
         print([[dictionary[id], np.around(freq, decimals=2)] for id, freq in doc]) # print the tfidf matrix out
+
     # Token to Id map
     #pprint(dictionary.token2id)
+
+def Bigrams(filename):
+    with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
+        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        dataset = [wd for wd in reader]
+
+        dct = corpora.Dictionary(dataset)
+        corpus = [dct.doc2bow(line) for line in dataset]
+
+        # Build the bigram models
+        bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)
+
+        # Construct bigram
+        print(bigram[dataset[0]])
 
 def main():
 
@@ -310,7 +325,8 @@ def main():
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
-    topicModel('MensRights.txt')
+    #topicModel('MensRights.txt')
+    Bigrams('gendercritical.txt')
     #Remove_Stopwords('terfisaslur.csv')
 
 if __name__ == '__main__':
