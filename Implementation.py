@@ -280,18 +280,21 @@ def topicModel(filename):
     #pprint(dictionary.token2id)
 
 def Bigrams(filename):
-    with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
-        reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-        dataset = [wd for wd in reader]
+    file = codecs.open(filename, 'r', encoding="UTF8")
+    dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
+                                    open(filename,
+                                         encoding='utf-8'))
+    corpus = [dictionary.doc2bow(simple_preprocess(line)) for line in open(filename,
+                                                                           encoding='utf-8')]
 
-        dct = corpora.Dictionary(dataset)
-        corpus = [dct.doc2bow(line) for line in dataset]
+    dataset = []
+    for line in file:
+        dataset.append(line)
+    # Build the bigram models
+    bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)
 
-        # Build the bigram models
-        bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)
-
-        # Construct bigram
-        print(bigram[dataset[0]])
+    # Construct bigram
+    print(bigram[dataset])
 
 def main():
 
