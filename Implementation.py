@@ -68,7 +68,7 @@ def Remove_Stopwords(filename):
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             for row in reader:  # Looks at each line
                 for i in row:  # Looks at each word
-                    if i not in final_stop_words:
+                    if i.lower() not in final_stop_words:
                         file.write(i) # This line causes errors
                         print(i)
         file.close()
@@ -83,10 +83,10 @@ def Remove_Stopwords(filename):
             reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
             for row in reader:  # Looks at each line
                 for i in row:  # Looks at each word
-                    if i not in stop_words:
+                    if i.lower() not in stop_words:
                         file.write(i)  # This line causes errors
                         print(i)
-            file.close()
+        file.close()
 
 
 def getCommentAuth(filename, filename2):
@@ -304,8 +304,8 @@ def main():
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
-    #topicModel('gendercritical.txt')
-    Remove_Stopwords('MensRights.csv')
+    #topicModel('MensRights.txt')
+    Remove_Stopwords('terfisaslur.csv')
 
 if __name__ == '__main__':
     main()
