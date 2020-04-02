@@ -10,6 +10,7 @@ from pprint import pprint
 from gensim.utils import simple_preprocess
 from nltk.corpus import stopwords
 import codecs
+from gensim import models
 from smart_open import smart_open
 import os
 
@@ -272,9 +273,14 @@ def topicModel(filename):
     dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
                                     open(filename,
                                          encoding='utf-8'))
+    corpus = [dictionary.doc2bow(simple_preprocess(line)) for line in open(filename,
+                                         encoding='utf-8')]
 
+    tfidf = models.TfidfModel(corpus, smartirs='ntc') # This model adds weights to each unique word in the corpus
+    for doc in tfidf[corpus]: # applies weight to each line
+        print([[dictionary[id], np.around(freq, decimals=2)] for id, freq in doc]) # print the tfidf matrix out
     # Token to Id map
-    pprint(dictionary.token2id)
+    #pprint(dictionary.token2id)
 
 def main():
 
@@ -309,7 +315,7 @@ def main():
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('MensRights.txt')
-    Remove_Stopwords('MensRights.csv')
+    Remove_Stopwords('MensRights.csv')    #Remove_Stopwords('terfisaslur.csv')
 
 if __name__ == '__main__':
     main()
