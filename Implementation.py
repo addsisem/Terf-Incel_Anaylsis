@@ -15,6 +15,7 @@ from nltk import word_tokenize
 from nltk.util import ngrams
 import codecs
 from smart_open import smart_open
+from nltk.collocations import *
 import os
 
 def saveSubmissions(subreddit, filename):
@@ -289,12 +290,22 @@ def topicModel(filename):
     #pprint(dictionary.token2id)
 
 def Bigrams(filename):
+    """
+    This function creates bigrams using two different methods from a given dataset.
+    :param filename:
+    :return:
+    """
 
     file = codecs.open(filename, 'r', encoding="UTF8")
 
     for line in file:
         token = nltk.word_tokenize(line)
         bigram = list(ngrams(token, 2))
+
+    bigram_measures = nltk.collocations.BigramAssocMeasures()
+    trigram_measures = nltk.collocations.TrigramAssocMeasures()
+    finder = BigramCollocationFinder.from_words(bigram)
+    print(finder.nbest(bigram_measures.pmi, 10))
     """dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
                                     open(filename,
                                          encoding='utf-8'))
