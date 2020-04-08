@@ -303,23 +303,31 @@ def Bigrams(filename):
         bigram = list(ngrams(token, 2))
 
     bigram_measures = nltk.collocations.BigramAssocMeasures()
-    trigram_measures = nltk.collocations.TrigramAssocMeasures()
     finder = BigramCollocationFinder.from_words(bigram)
     print(finder.nbest(bigram_measures.pmi, 10))
-    """dictionary = corpora.Dictionary(simple_preprocess(line, deacc=True) for line in
-                                    open(filename,
-                                         encoding='utf-8'))
-    corpus = [dictionary.doc2bow(simple_preprocess(line)) for line in open(filename,
-                                                                           encoding='utf-8')]
-
-    dataset = []
-    for line in file:
-        dataset.append(line)
-    # Build the bigram models
-    bigram = gensim.models.phrases.Phrases(dataset, min_count=3, threshold=10)"""
 
     # Construct bigram
     print(bigram)
+
+def Trigrams(filename):
+    """
+    This function creates trigrams using two different methods from a given dataset.
+    :param filename:
+    :return:
+    """
+
+    file = codecs.open(filename, 'r', encoding="UTF8")
+
+    for line in file:
+        token = nltk.word_tokenize(line)
+        trigram = list(ngrams(token, 3))
+
+    trigram_measures = nltk.collocations.TrigramAssocMeasures()
+    finder = TrigramCollocationFinder.from_words(trigram)
+    print(finder.nbest(trigram_measures.pmi, 10))
+
+    # Construct trigram
+    print(trigram)
 
 def main():
 
@@ -354,7 +362,8 @@ def main():
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('MensRights.txt')
-    Bigrams('gendercritical.txt')
+    #Bigrams('gendercritical.txt')
+    Trigrams('gendercritical.txt')
     #Remove_Stopwords('gendercritical.csv')
 
 if __name__ == '__main__':
