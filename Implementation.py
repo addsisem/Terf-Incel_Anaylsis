@@ -312,7 +312,7 @@ def Bigrams(filename):
     print(finder.nbest(bigram_measures.pmi, 10))
 
     # Construct bigram
-    print(bigram)
+    print(bigram) # comment out this line to use other method
 
 def Trigrams(filename):
     """
@@ -332,7 +332,7 @@ def Trigrams(filename):
     print(finder.nbest(trigram_measures.pmi, 10))
 
     # Construct trigram
-    print(trigram)
+    print(trigram) # comment out this line to use other method
 
 def main():
 
@@ -368,9 +368,9 @@ def main():
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('MensRights.txt')
     #Bigrams('gendercritical.txt')
-    Trigrams('gendercritical.txt')
+    #Trigrams('gendercritical.txt')
     #Remove_Stopwords('gendercritical.csv')
-    #Bigrams('gendercritical.txt')
+    Bigrams('gendercritical.txt')
     #Remove_Stopwords(files[k])
     # topicModel('gendercritical.txt')
 
