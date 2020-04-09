@@ -11,7 +11,7 @@ from gensim import models
 from pprint import pprint
 from gensim.utils import simple_preprocess
 from nltk.corpus import stopwords
-from nltk import word_tokenize
+from nltk import word_tokenize, re
 from nltk.util import ngrams
 import codecs
 from smart_open import smart_open
@@ -59,6 +59,7 @@ def Remove_Stopwords(filename):
 
     df = pd.read_csv(filename)
     df.drop(df.columns[[0, 1]], axis=1, inplace=True) #Remove comment author
+    df.dropna(how='any', inplace=True)
     df.to_csv(filename)
 
     newfile = filename.replace('.csv', '.txt')
@@ -74,13 +75,15 @@ def Remove_Stopwords(filename):
         final_stop_words = set([word for word in stop_words if word not in terf_terms])
 
         with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
-            reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-            for row in reader:  # Looks at each line
-                for i in row:  # Looks at each word
-                    if i.lower() not in final_stop_words:
-                        file.write(i) # This line causes errors
-                        file.write(' ')
-                        print(i)
+            reader = csv.reader(csvfile, delimiter=',', quotechar='|') # Separates file by commas
+            for line in reader:  # Looks at each separated value
+                for row in line:  # Looks at each line
+                    sentence = re.split(' ', row) # Seperates words from lines using spaces as delimiters
+                    for i in sentence: # Loops through each word
+                        if i.lower() not in final_stop_words and i.isdigit() is False:
+                            file.write(i)
+                            file.write(' ')
+                            print(i)
         file.close()
 
     elif filename == 'MGTOW2.csv' or 'MensRights.csv' or 'IncelsWithoutHate.csv' or 'trufemcels.csv' or 'KotakuInAction.csv' or 'MensRants.csv':
@@ -90,13 +93,15 @@ def Remove_Stopwords(filename):
         stop_words = (stopwords.words('english'))
 
         with open(filename, 'r', encoding="UTF8") as csvfile:  # Actually opens the files for reading
-            reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
-            for row in reader:  # Looks at each line
-                for i in row:  # Looks at each word
-                    if i.lower() not in stop_words:
-                        file.write(i)  # This line causes errors
-                        file.write(' ')
-                        print(i)
+            reader = csv.reader(csvfile, delimiter=',', quotechar='|')
+            for line in reader:  # Looks at each separated value
+                for row in line:  # Looks at each line
+                    sentence = re.split(' ', row) # Seperates words from lines using spaces as delimiters
+                    for i in sentence: # Loops through each word
+                        if i.lower() not in stop_words and i.isdigit() is False:
+                            file.write(i)  # This line causes errors
+                            file.write(' ')
+                            print(i)
         file.close()
 
 
@@ -343,19 +348,19 @@ def main():
                  'terfisaslurCommAuth.csv', 'IncelsWithoutHateCommAuth.csv', 'MensRantsCommAuth.csv', 'GenderCynicalCriticalCommAuth.csv', 'TrollGCCommAuth.csv',
                      'GenderCriticalGuysCommAuth.csv', 'trufemcelsCommAuth.csv', 'KotakuInActionCommAuth.csv', 'MGTOW2CommAuth.csv']
 
-    #for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
-        #subreddit = redditInstance.subreddit(subredditList[3])
+    for k in range(len(subredditList)): # Loop to loop through the saveSubmissions function
+        #subreddit = redditInstance.subreddit(subredditList[k])
         #save_post(subreddit, authFiles[k])
-        #saveSubmissions(subreddit, files[3])
+        #saveSubmissions(subreddit, files[k])
         #getCommentAuth(files[k], authCommFiles[k])
         #read_csv(files[k], subredditList[k])
         #comparePostAuth(authFiles[k])
 
      #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
-    #topicModel('MensRights.txt')
-    Bigrams('gendercritical.txt')
-    #Remove_Stopwords('gendercritical.csv')
+    #Bigrams('gendercritical.txt')
+        Remove_Stopwords(files[k])
+    # topicModel('gendercritical.txt')
 
 if __name__ == '__main__':
     main()
