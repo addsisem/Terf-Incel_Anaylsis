@@ -6,6 +6,7 @@ from collections import Counter
 import matplotlib.pyplot as plt
 import numpy as np
 import gensim
+import re
 from gensim import corpora
 from gensim import models
 from pprint import pprint
@@ -14,7 +15,7 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize, re
 from nltk.util import ngrams
 import codecs
-
+from textblob import TextBlob
 from praw import Reddit
 from smart_open import smart_open
 from nltk.collocations import *
@@ -358,6 +359,35 @@ def Trigrams(filename):
     # Construct trigram
     print(trigram) # comment out this line to use other method
 
+def SentimentAnalysis(filename):
+    file = codecs.open(filename, 'r', encoding="UTF8")
+    negative = 0
+    positive = 0
+    neutral = 0
+    totallines = 0
+    for line in file:
+        totallines = totallines + 1
+        analysis = TextBlob(line)
+        print(line)
+        if analysis.sentiment.polarity > 0:
+            positive = positive + 1
+        elif analysis.sentiment.polarity == 0:
+            neutral = neutral + 1
+        else:
+            negative = negative + 1
+
+    positive_lines = (positive/totallines)
+    positive_lines = round(positive_lines, 3)
+    negative_lines = (negative/totallines)
+    negative_lines = round(negative_lines, 3)
+    neutral_lines = (neutral/totallines)
+    neutral_lines = round(neutral_lines, 3)
+
+    print(str(positive_lines) + "% of the lines in " + filename + " are considered positive.")
+    print(str(neutral_lines) + "% of the lines in " + filename + " are considered neutral.")
+    print(str(negative_lines) + "% of the lines in " + filename + " are considered negative.")
+
+
 def main():
 
     # https://stackoverflow.com/questions/15063936/csv-error-field-larger-than-field-limit-131072
@@ -397,7 +427,8 @@ def main():
     #Bigrams('gendercritical.txt')
     #Remove_Stopwords(files[k])
     # topicModel('gendercritical.txt')
-    authPosts(redditInstance, 'gendercriticalAuth.csv')
+    #authPosts(redditInstance, 'gendercriticalAuth.csv')
+    SentimentAnalysis('gendercritical.csv')
 
 if __name__ == '__main__':
     main()
