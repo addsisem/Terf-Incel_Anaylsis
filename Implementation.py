@@ -14,6 +14,8 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize, re
 from nltk.util import ngrams
 import codecs
+
+from praw import Reddit
 from smart_open import smart_open
 from nltk.collocations import *
 import os
@@ -236,6 +238,28 @@ def read_csv(filename, subreddit):
     # https://stackoverflow.com/questions/17530542/how-to-add-pandas-data-to-an-existing-csv-file
     df.to_csv("Percentage.csv", mode='a', header=False) # Credit to root and tlingf from Stack Overflow
 
+def authPosts(redditInstance, authfile):
+    """This function will loop through the top users of each subreddit and grab the user's top submissions (or posts)
+    across Reddit"""
+
+    auth = []
+
+    df = pd.read_csv(authfile)
+
+    val = df.values.tolist()
+
+    for i in range(len(val)):
+        auth.append(val[i][1])
+
+    temp = []
+
+    for user in auth:
+        temp.clear()
+        print("User: ", user)
+        for submission in redditInstance.redditor(user).submissions.top('all'):
+            temp.append(submission.subreddit)
+        print(Counter(temp))
+
 def Show_results(filename, authfile):
     """
     This function uses a csv file to create several bar graphs that communicate our findings
@@ -364,15 +388,16 @@ def main():
         #read_csv(files[k], subredditList[k])
         #comparePostAuth(authFiles[k])
 
-     #compareCSVAuth(authCommFiles[0], authCommFiles[3])
+    #compareCSVAuth(authCommFiles[0], authCommFiles[3])
     #Show_results('Percentage.csv', 'terfisaslurAuth.csv')
     #topicModel('MensRights.txt')
     #Bigrams('gendercritical.txt')
     #Trigrams('gendercritical.txt')
     #Remove_Stopwords('gendercritical.csv')
-    Bigrams('gendercritical.txt')
+    #Bigrams('gendercritical.txt')
     #Remove_Stopwords(files[k])
     # topicModel('gendercritical.txt')
+    authPosts(redditInstance, 'gendercriticalAuth.csv')
 
 if __name__ == '__main__':
     main()
