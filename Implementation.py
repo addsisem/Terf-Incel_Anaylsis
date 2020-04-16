@@ -7,6 +7,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import gensim
 import re
+import random
+from nltk import classify
+from nltk import NaiveBayesClassifier
 from gensim import corpora
 from gensim import models
 from pprint import pprint
@@ -15,9 +18,13 @@ from nltk.corpus import stopwords
 from nltk import word_tokenize, re
 from nltk.util import ngrams
 import codecs
+import string
 from textblob import TextBlob
 from praw import Reddit
 from smart_open import smart_open
+from nltk.corpus import twitter_samples
+from nltk.tag import pos_tag
+from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.collocations import *
 import os
 
@@ -359,7 +366,38 @@ def Trigrams(filename):
     # Construct trigram
     print(trigram) # comment out this line to use other method
 
+def remove_noise(tweet_tokens, stop_words = ()):
+    """
+    Function taken from https://www.digitalocean.com/community/tutorials/how-to-perform-sentiment-analysis-in-python-3-using-the-natural-language-toolkit-nltk
+    to be used in the sentiment analysis function
+    :param tweet_tokens:
+    :param stop_words:
+    :return:
+    """
+
+    cleaned_tokens = []
+
+    for token, tag in pos_tag(tweet_tokens):
+        token = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+#]|[!*\(\),]|'\
+                       '(?:%[0-9a-fA-F][0-9a-fA-F]))+','', token)
+        token = re.sub("(@[A-Za-z0-9_]+)","", token)
+
+        if tag.startswith("NN"):
+            pos = 'n'
+        elif tag.startswith('VB'):
+            pos = 'v'
+        else:
+            pos = 'a'
+
+        lemmatizer = WordNetLemmatizer()
+        token = lemmatizer.lemmatize(token, pos)
+
+        if len(token) > 0 and token not in string.punctuation and token.lower() not in stop_words:
+            cleaned_tokens.append(token.lower())
+    return cleaned_tokens
+
 def SentimentAnalysis(filename):
+    """
     file = codecs.open(filename, 'r', encoding="UTF8")
     negative = 0
     positive = 0
@@ -386,7 +424,54 @@ def SentimentAnalysis(filename):
     print(str(positive_lines) + "% of the lines in " + filename + " are considered positive.")
     print(str(neutral_lines) + "% of the lines in " + filename + " are considered neutral.")
     print(str(negative_lines) + "% of the lines in " + filename + " are considered negative.")
+    """
+    stop_words = (stopwords.words('english'))
+    positive_tweet_tokens = twitter_samples.tokenized('positive_tweets.json')
+    negative_tweet_tokens = twitter_samples.tokenized('negative_tweets.json')
 
+    positive_cleaned_tokens_list = []
+    negative_cleaned_tokens_list = []
+
+    for tokens in positive_tweet_tokens:
+        positive_cleaned_tokens_list.append(remove_noise(tokens, stop_words))
+
+    for tokens in negative_tweet_tokens:
+        negative_cleaned_tokens_list.append(remove_noise(tokens, stop_words))
+
+    positive_tokens_for_model = get_tweets_for_model(positive_cleaned_tokens_list)
+    negative_tokens_for_model = get_tweets_for_model(negative_cleaned_tokens_list)
+
+    positive_dataset = [(tweet_dict, "Positive")
+                        for tweet_dict in positive_tokens_for_model]
+
+    negative_dataset = [(tweet_dict, "Negative")
+                        for tweet_dict in negative_tokens_for_model]
+
+    dataset = positive_dataset + negative_dataset
+
+    random.shuffle(dataset)
+
+    train_data = dataset[:7000]
+    test_data = dataset[7000:]
+
+    classifier = NaiveBayesClassifier.train(train_data)
+
+    print("Accuracy is:", classify.accuracy(classifier, test_data))
+
+    print(classifier.show_most_informative_features(10))
+
+    file = codecs.open(filename, 'r', encoding="UTF8")
+
+    for line in file:
+        token = nltk.word_tokenize(line)
+        print(token, classifier.classify(dict([token, True] for token in token)))
+
+
+def get_tweets_for_model(cleaned_tokens_list):
+    """Taken from https://www.digitalocean.com/community/tutorials/how-to-perform-sentiment-analysis-in-python-3-using-the-natural-language-toolkit-nltk
+    to be used in sentiment analysis"""
+    for tweet_tokens in cleaned_tokens_list:
+        yield dict([token, True] for token in tweet_tokens)
 
 def main():
 
@@ -429,6 +514,7 @@ def main():
     # topicModel('gendercritical.txt')
     #authPosts(redditInstance, 'gendercriticalAuth.csv')
     SentimentAnalysis('gendercritical.csv')
+
 
 if __name__ == '__main__':
     main()
